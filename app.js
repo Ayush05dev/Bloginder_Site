@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -9,11 +11,11 @@ const { checkForAuthenticationCookie } = require('./middlewares/authentication')
 const blog= require('./models/blog');
 const User = require('./models/user');
 
-const PORT =8000;
+const PORT = process.env.PORT;
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
-mongoose.connect('mongodb://127.0.0.1:27017/bloginder').then(() => {
+mongoose.connect(process.env.MONGO_URL ).then(() => {
   console.log('Connected to MongoDB');
 });
 
