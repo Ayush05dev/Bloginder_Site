@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/head') %>
+    <title>Dashboard</title>
+    <style>
+        /* Styles for card consistency */
+        .card {
+            height: 100%; /* Ensure all cards stretch to the same height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 200px; /* Fixed height for images */
+            object-fit: cover; /* Crop images while maintaining aspect ratio */
+        }
+        .card-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limit to 2 lines */
+            -webkit-box-orient: vertical;
+        }
+    </style>
+</head>
+<body>
+    <%- include('./partials/nav') %>
+
+    <% if (!locals.user) { %>
+        <div class="alert alert-danger" role="alert">
+            You need to be logged in to view this page.
+        </div>
+    <% } %>
+        
+
+     <!-- profile card -->
+
+<div class="my-4">
+    <div class="card m-auto" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="<%= user.profileImageURL %>" class="img-fluid rounded-start" alt="<%= user.fullName %>">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"><%= user.fullName %></h5>
+              <p><strong>Email:</strong> <%= user.email %></p>
+              <p><strong>Role:</strong> <%= user.role %></p>
+              <% if (authorize) { %>
+                <a href="/user/dashboard/<%=user._id%>/edit" class="btn btn-primary">Edit Profile</a>
+              <% } %>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+</div>
+
+    <!-- User Blogs -->
+    <div class="container mt-3">
+        <h1>My Blogs</h1>
+        <div class="row mt-5">
+            <% userblogs.forEach(blog => { %>
+                <div class="col-md-4 mb-4"> <!-- 3 columns per row on medium screens -->
+                    <div class="card" style="width: 100%;"> <!-- 100% width of the column -->
+                        <!-- Image -->
+                        <img src="<%= blog.coverImageURL %>" class="card-img-top" alt="<%= blog.title %>">
+                        
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <h5 class="card-title"><%= blog.title %></h5>
+                            <!-- Truncated Text -->
+                            <p class="card-text"><%= blog.body %></p>
+                            <!-- View Button -->
+                            <a href="/blog/<%= blog._id %>" class="btn btn-primary">View</a>
+                            <span style="margin-left: 5px;" ><%= blog.createdAt.toLocaleDateString({
+                                day: "numeric", // Day of the month
+                                month: "long",  // Full month name
+                                year: "numeric" // Full year
+                            }) %></span>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+<!-- user saved items -->
+
+<div class="container mt-3">
+    <h1>Saved Items</h1>
+    <div class="row mt-5">
+        <% savedBlogs.forEach(blog => { %>
+            <div class="col-md-4 mb-4"> <!-- 3 columns per row on medium screens -->
+                <div class="card" style="width: 100%;"> <!-- 100% width of the column -->
+                    <!-- Image -->
+                    <img src="<%= blog.coverImageURL %>" class="card-img-top" alt="<%= blog.title %>">
+                    
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <h5 class="card-title"><%= blog.title %></h5>
+                        <!-- Truncated Text -->
+                        <p class="card-text"><%= blog.body %></p>
+                        <!-- View Button -->
+                        <a href="/blog/<%= blog._id %>" class="btn btn-primary">View</a>
+                        <span style="margin-left: 5px;" ><%= blog.createdAt.toLocaleDateString({
+                            day: "numeric", // Day of the month
+                            month: "long",  // Full month name
+                            year: "numeric" // Full year
+                        }) %></span>
+                         <button 
+                         id="saveButton-<%= blog._id %>" 
+                         class="save-button" 
+                         onclick="toggleSave('<%= blog._id %>')">
+                         <%= user.savedBlogs.includes(blog._id) ? 'Unsave' : 'Save' %>
+                     </button>
+
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+
+</div>
+
+<script src="/saveScript.js"></script>
+    <%- include('./partials/script') %>
+</body>
+</html>
