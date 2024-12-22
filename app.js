@@ -11,13 +11,20 @@ const { checkForAuthenticationCookie } = require('./middlewares/authentication')
 const blog= require('./models/blog');
 const User = require('./models/user');
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
-mongoose.connect(process.env.MONGO_URL ).then(() => {
-  console.log('Connected to MongoDB');
-});
+// console.log(process.env.MONGO_URL);
+// mongoose.connect(process.env.MONGO_URL ).then(() => {
+//   console.log('Connected to MongoDB');
+// });
+
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error('MongoDB connection error:', error));
+
 
 
 app.use(express.urlencoded({extended: false}));
